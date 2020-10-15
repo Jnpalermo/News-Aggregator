@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strings"
 )
 
 type SiteMapIndex struct {
@@ -31,10 +32,11 @@ func main() {
 	xml.Unmarshal(bytes, &s)
 
 	for _, Location := range s.Locations {
+		Location = strings.TrimSpace(Location)
 		resp, _ := http.Get(Location)
 		bytes, _ := ioutil.ReadAll(resp.Body)
 		xml.Unmarshal(bytes, &n)
-		for idx, _ := range n.Titles {
+		for idx, _ := range n.Keywords {
 			news_map[n.Titles[idx]] = NewsMap{n.Keywords[idx], n.Locations[idx]}
 		}
 	}
