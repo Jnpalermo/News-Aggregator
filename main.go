@@ -2,19 +2,27 @@ package main
 
 import (
 	"fmt"
+	"html/template"
 	"net/http"
 )
+
+type NewsAggPage struct {
+	Title string
+	News  string
+}
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Go is fun!")
 }
 
-func aboutHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "This is the about page!")
+func newsAggHandler(w http.ResponseWriter, r *http.Request) {
+	p := NewsAggPage{Title: "Amazing News Aggregator", News: "some news"}
+	t, _ := template.ParseFiles("basictemplating.html")
+	t.Execute(w, p)
 }
 
 func main() {
 	http.HandleFunc("/", indexHandler)
-	http.HandleFunc("/about", aboutHandler)
+	http.HandleFunc("/agg/", newsAggHandler)
 	http.ListenAndServe(":8080", nil)
 }
